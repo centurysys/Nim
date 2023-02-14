@@ -10,7 +10,7 @@
 when defined(nimHasStyleChecks):
   {.push styleChecks: off.}
 
-when defined(freertos) or defined(zephyr):
+when defined(freertos) or defined(zephyr) or defined(nuttx):
   const
     hasSpawnH = false # should exist for every Posix system nowadays
     hasAioH = false
@@ -620,6 +620,8 @@ var
 # Regenerate using detect.nim!
 when defined(lwip):
   include posix_freertos_consts
+elif defined(nuttx):
+  include posix_nuttx_consts
 else:
   include posix_other_consts
 
@@ -640,6 +642,9 @@ when defined(linux) or defined(nimdoc):
       ## or UDP packets. (Requires Linux kernel > 3.9)
   else:
     const SO_REUSEPORT* = cint(15)
+when defined(nuttx):
+  # unused
+  const SO_REUSEPORT* = cint(0)
 else:
   var SO_REUSEPORT* {.importc, header: "<sys/socket.h>".}: cint
 
